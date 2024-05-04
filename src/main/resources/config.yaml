@@ -1,0 +1,14 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 3000
+
+llm:
+  ollama:
+    baseUrl: http://localhost:11434
+    modelName: llama3
+
+  groq:
+    baseUrl: https://api.groq.com/openai/v1
+    apiKey: ${GROQ_API_KEY}
+    modelName: Llama3-8b-8192

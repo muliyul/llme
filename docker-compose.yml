@@ -1,0 +1,74 @@
+version: '3.9'
+services:
+#  swagger-ui:
+#    image: swaggerapi/swagger-ui
+#    ports:
+#      - "80:3001"
+#    environment:
+#      SWAGGER_JSON_URL: http://localhost:3000/openapi.yaml
+#    networks:
+#      - ollama-docker
+
+#  ollama:
+#    image: ollama/ollama:latest
+#    ports:
+#      - "11434:11434"
+#    volumes:
+#      - .:/code
+#      - ./ollama/ollama:/root/.ollama
+#    container_name: ollama
+#    pull_policy: always
+#    tty: true
+#    restart: always
+#    networks:
+#      - ollama-docker
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
+#              count: 1
+#              capabilities: [ gpu ]
+
+#  ollama-webui:
+#    image: ghcr.io/open-webui/open-webui:main
+#    container_name: ollama-webui
+#    volumes:
+#      - ./ollama/ollama-webui:/app/backend/data
+#    depends_on:
+#      - ollama
+#    ports:
+#      - "9999:8080"
+#    environment:
+#      - '/ollama/api=http://ollama:11434/api'
+#    extra_hosts:
+#      - host.docker.internal:host-gateway
+#    restart: unless-stopped
+#    networks:
+#      - ollama-docker
+
+  localai:
+    image: localai/localai:v2.14.0-aio-gpu-nvidia-cuda-12
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/readyz"]
+      interval: 1m
+      timeout: 20m
+      retries: 5
+    ports:
+      - "11434:8080"
+    environment:
+      - DEBUG=true
+    volumes:
+      - ./models:/build/models:cached
+    deploy:
+       resources:
+         reservations:
+           devices:
+             - driver: nvidia
+               count: 1
+               capabilities: [gpu]
+
+#networks:
+#  ollama-docker:
+#    external: false
+
